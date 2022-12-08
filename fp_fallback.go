@@ -1,3 +1,4 @@
+//go:build !amd64 || generic
 // +build !amd64 generic
 
 // Copyright 2020 ConsenSys Software Inc.
@@ -26,7 +27,7 @@ package bls12381
 
 import "math/bits"
 
-func add(z, x, y *fe) {
+func add(z, x, y *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(x[0], y[0], 0)
@@ -49,7 +50,7 @@ func add(z, x, y *fe) {
 	}
 }
 
-func addAssign(z, y *fe) {
+func addAssign(z, y *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(z[0], y[0], 0)
@@ -72,7 +73,7 @@ func addAssign(z, y *fe) {
 	}
 }
 
-func ladd(z, x, y *fe) {
+func ladd(z, x, y *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(x[0], y[0], 0)
@@ -83,7 +84,7 @@ func ladd(z, x, y *fe) {
 	z[5], _ = bits.Add64(x[5], y[5], carry)
 }
 
-func laddAssign(z, y *fe) {
+func laddAssign(z, y *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(z[0], y[0], 0)
@@ -94,7 +95,7 @@ func laddAssign(z, y *fe) {
 	z[5], _ = bits.Add64(z[5], y[5], carry)
 }
 
-func double(z, x *fe) {
+func double(z, x *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(x[0], x[0], 0)
@@ -117,7 +118,7 @@ func double(z, x *fe) {
 	}
 }
 
-func doubleAssign(z *fe) {
+func doubleAssign(z *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(z[0], z[0], 0)
@@ -140,7 +141,7 @@ func doubleAssign(z *fe) {
 	}
 }
 
-func ldouble(z, x *fe) {
+func ldouble(z, x *Fe) {
 	var carry uint64
 
 	z[0], carry = bits.Add64(x[0], x[0], 0)
@@ -151,7 +152,7 @@ func ldouble(z, x *fe) {
 	z[5], _ = bits.Add64(x[5], x[5], carry)
 }
 
-func sub(z, x, y *fe) {
+func sub(z, x, y *Fe) {
 	var b uint64
 	z[0], b = bits.Sub64(x[0], y[0], 0)
 	z[1], b = bits.Sub64(x[1], y[1], b)
@@ -170,7 +171,7 @@ func sub(z, x, y *fe) {
 	}
 }
 
-func subAssign(z, y *fe) {
+func subAssign(z, y *Fe) {
 	var b uint64
 	z[0], b = bits.Sub64(z[0], y[0], 0)
 	z[1], b = bits.Sub64(z[1], y[1], b)
@@ -189,7 +190,7 @@ func subAssign(z, y *fe) {
 	}
 }
 
-func lsubAssign(z, y *fe) {
+func lsubAssign(z, y *Fe) {
 	var b uint64
 	z[0], b = bits.Sub64(z[0], y[0], 0)
 	z[1], b = bits.Sub64(z[1], y[1], b)
@@ -199,7 +200,7 @@ func lsubAssign(z, y *fe) {
 	z[5], b = bits.Sub64(z[5], y[5], b)
 }
 
-func neg(z, x *fe) {
+func neg(z, x *Fe) {
 	if x.isZero() {
 		z.zero()
 		return
@@ -213,7 +214,7 @@ func neg(z, x *fe) {
 	z[5], _ = bits.Sub64(1873798617647539866, x[5], borrow)
 }
 
-func mul(z, x, y *fe) {
+func mul(z, x, y *Fe) {
 
 	var t [6]uint64
 	var c [3]uint64
@@ -333,7 +334,7 @@ func mul(z, x, y *fe) {
 	}
 }
 
-func square(z, x *fe) {
+func square(z, x *Fe) {
 
 	var t [6]uint64
 	var c [3]uint64
@@ -602,11 +603,11 @@ func lwdouble(z, x *wfe) {
 	z[11], _ = bits.Add64(x[11], x[11], carry)
 }
 
-func fromWide(c *fe, w *wfe) {
+func fromWide(c *Fe, w *wfe) {
 	montRed(c, w)
 }
 
-func wmul(w *wfe, a, b *fe) {
+func wmul(w *wfe, a, b *Fe) {
 
 	var w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11 uint64
 	var a0 = a[0]
@@ -883,7 +884,7 @@ func wmul(w *wfe, a, b *fe) {
 	w[11] = w11
 }
 
-func montRed(c *fe, w *wfe) {
+func montRed(c *Fe, w *wfe) {
 
 	// Reduces T as T (R^-1) modp
 	// Handbook of Applied Cryptography
@@ -1280,14 +1281,14 @@ func fp2SubAssign(c, a *fe2) {
 }
 
 func mulByNonResidue(c, a *fe2) {
-	t := new(fe)
+	t := new(Fe)
 	sub(t, &a[0], &a[1])
 	add(&c[1], &a[0], &a[1])
 	c[0].set(t)
 }
 
 func mulByNonResidueAssign(a *fe2) {
-	t := new(fe)
+	t := new(Fe)
 	sub(t, &a[0], &a[1])
 	add(&a[1], &a[0], &a[1])
 	a[0].set(t)

@@ -1,8 +1,8 @@
 package bls12381
 
 // isogenyMapG1 applies 11-isogeny map for BLS12-381 G1 defined at draft-irtf-cfrg-hash-to-curve-06.
-func isogenyMapG1(x, y *fe) {
-	xNum, xDen, yNum, yDen := new(fe), new(fe), new(fe), new(fe)
+func isogenyMapG1(x, y *Fe) {
+	xNum, xDen, yNum, yDen := new(Fe), new(Fe), new(Fe), new(Fe)
 	xNum.set(isogenyConstansG1[0][15])
 	xDen.set(isogenyConstansG1[1][15])
 	yNum.set(isogenyConstansG1[2][15])
@@ -64,7 +64,7 @@ func isogenyMapG2(e *fp2, x, y *fe2) {
 	e.mulAssign(y, yNum)
 }
 
-var isogenyConstansG1 = [4][16]*fe{
+var isogenyConstansG1 = [4][16]*Fe{
 	{
 		{0x4d18b6f3af00131c, 0x19fa219793fee28c, 0x3f2885f1467f19ae, 0x23dcea34f2ffb304, 0xd15b58d2ffc00054, 0x0913be200a20bef4},
 		{0x898985385cdbbd8b, 0x3c79e43cc7d966aa, 0x1597e193f4cd233a, 0x8637ef1e4d6623ad, 0x11b22deed20d827b, 0x07097bc5998784ad},

@@ -1,3 +1,4 @@
+//go:build amd64 && !generic
 // +build amd64,!generic
 
 package bls12381
@@ -18,17 +19,17 @@ func init() {
 	}
 }
 
-var mul func(c, a, b *fe) = mulADX
-var wmul func(c *wfe, a, b *fe) = wmulADX
-var fromWide func(c *fe, w *wfe) = montRedADX
+var mul func(c, a, b *Fe) = mulADX
+var wmul func(c *wfe, a, b *Fe) = wmulADX
+var fromWide func(c *Fe, w *wfe) = montRedADX
 var wfp2Mul func(c *wfe2, a, b *fe2) = wfp2MulADX
 var wfp2Square func(c *wfe2, b *fe2) = wfp2SquareADX
 
-func square(c, a *fe) {
+func square(c, a *Fe) {
 	mul(c, a, a)
 }
 
-func neg(c, a *fe) {
+func neg(c, a *Fe) {
 	if a.isZero() {
 		c.set(a)
 	} else {
@@ -37,58 +38,58 @@ func neg(c, a *fe) {
 }
 
 //go:noescape
-func add(c, a, b *fe)
+func add(c, a, b *Fe)
 
 //go:noescape
-func addAssign(a, b *fe)
+func addAssign(a, b *Fe)
 
 //go:noescape
-func ladd(c, a, b *fe)
+func ladd(c, a, b *Fe)
 
 //go:noescape
-func laddAssign(a, b *fe)
+func laddAssign(a, b *Fe)
 
 //go:noescape
-func double(c, a *fe)
+func double(c, a *Fe)
 
 //go:noescape
-func doubleAssign(a *fe)
+func doubleAssign(a *Fe)
 
 //go:noescape
-func ldouble(c, a *fe)
+func ldouble(c, a *Fe)
 
 //go:noescape
-func ldoubleAssign(a *fe)
+func ldoubleAssign(a *Fe)
 
 //go:noescape
-func sub(c, a, b *fe)
+func sub(c, a, b *Fe)
 
 //go:noescape
-func subAssign(a, b *fe)
+func subAssign(a, b *Fe)
 
 //go:noescape
-func lsubAssign(a, b *fe)
+func lsubAssign(a, b *Fe)
 
 //go:noescape
-func _neg(c, a *fe)
+func _neg(c, a *Fe)
 
 //go:noescape
-func mulNoADX(c, a, b *fe)
+func mulNoADX(c, a, b *Fe)
 
 //go:noescape
-func mulADX(c, a, b *fe)
+func mulADX(c, a, b *Fe)
 
 //go:noescape
-func wmulNoADX(c *wfe, a, b *fe)
+func wmulNoADX(c *wfe, a, b *Fe)
 
 //go:noescape
-func wmulADX(c *wfe, a, b *fe)
+func wmulADX(c *wfe, a, b *Fe)
 
 //go:noescape
-func montRedNoADX(a *fe, w *wfe)
+func montRedNoADX(a *Fe, w *wfe)
 
 //go:noescape
-func montRedADX(a *fe, w *wfe)
+func montRedADX(a *Fe, w *wfe)
 
 //go:noescape
 func lwadd(c, a, b *wfe)

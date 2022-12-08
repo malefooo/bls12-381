@@ -5,20 +5,20 @@ import (
 	"math/big"
 )
 
-func fromBytes(in []byte) (*fe, error) {
-	fe := &fe{}
+func fromBytes(in []byte) (*Fe, error) {
+	Fe := &Fe{}
 	if len(in) != fpByteSize {
 		return nil, errors.New("input string must be equal 48 bytes")
 	}
-	fe.setBytes(in)
-	if !fe.isValid() {
+	Fe.setBytes(in)
+	if !Fe.isValid() {
 		return nil, errors.New("must be less than modulus")
 	}
-	toMont(fe, fe)
-	return fe, nil
+	toMont(Fe, Fe)
+	return Fe, nil
 }
 
-func from64Bytes(in []byte) (*fe, error) {
+func from64Bytes(in []byte) (*Fe, error) {
 	if len(in) != 32*2 {
 		return nil, errors.New("input string must be equal 64 bytes")
 	}
@@ -35,7 +35,7 @@ func from64Bytes(in []byte) (*fe, error) {
 		return nil, err
 	}
 	// F = 2 ^ 256 * R
-	F := fe{
+	F := Fe{
 		0x75b3cd7c5ce820f,
 		0x3ec6ba621c3edb0b,
 		0x168a13d82bff6bce,
@@ -49,56 +49,56 @@ func from64Bytes(in []byte) (*fe, error) {
 	return e1, nil
 }
 
-func fromBig(in *big.Int) (*fe, error) {
-	fe := new(fe).setBig(in)
-	if !fe.isValid() {
+func fromBig(in *big.Int) (*Fe, error) {
+	Fe := new(Fe).setBig(in)
+	if !Fe.isValid() {
 		return nil, errors.New("invalid input string")
 	}
-	toMont(fe, fe)
-	return fe, nil
+	toMont(Fe, Fe)
+	return Fe, nil
 }
 
-func fromString(in string) (*fe, error) {
-	fe, err := new(fe).setString(in)
+func fromString(in string) (*Fe, error) {
+	Fe, err := new(Fe).setString(in)
 	if err != nil {
 		return nil, err
 	}
-	if !fe.isValid() {
+	if !Fe.isValid() {
 		return nil, errors.New("invalid input string")
 	}
-	toMont(fe, fe)
-	return fe, nil
+	toMont(Fe, Fe)
+	return Fe, nil
 }
 
-func toBytes(e *fe) []byte {
-	e2 := new(fe)
+func toBytes(e *Fe) []byte {
+	e2 := new(Fe)
 	fromMont(e2, e)
 	return e2.bytes()
 }
 
-func toBig(e *fe) *big.Int {
-	e2 := new(fe)
+func toBig(e *Fe) *big.Int {
+	e2 := new(Fe)
 	fromMont(e2, e)
 	return e2.big()
 }
 
-func toString(e *fe) (s string) {
-	e2 := new(fe)
+func toString(e *Fe) (s string) {
+	e2 := new(Fe)
 	fromMont(e2, e)
 	return e2.string()
 }
 
-func toMont(c, a *fe) {
+func toMont(c, a *Fe) {
 	mul(c, a, r2)
 }
 
-func fromMont(c, a *fe) {
-	mul(c, a, &fe{1})
+func fromMont(c, a *Fe) {
+	mul(c, a, &Fe{1})
 }
 
 func wfp2MulGeneric(c *wfe2, a, b *fe2) {
 	wt0, wt1 := new(wfe), new(wfe)
-	t0, t1 := new(fe), new(fe)
+	t0, t1 := new(Fe), new(Fe)
 	wmul(wt0, &a[0], &b[0])
 	wmul(wt1, &a[1], &b[1])
 	wsub(&c[0], wt0, wt1)
@@ -110,7 +110,7 @@ func wfp2MulGeneric(c *wfe2, a, b *fe2) {
 }
 
 func wfp2SquareGeneric(c *wfe2, a *fe2) {
-	t0, t1, t2 := new(fe), new(fe), new(fe)
+	t0, t1, t2 := new(Fe), new(Fe), new(Fe)
 	ladd(t0, &a[0], &a[1])
 	sub(t1, &a[0], &a[1])
 	ldouble(t2, &a[0])
@@ -118,8 +118,8 @@ func wfp2SquareGeneric(c *wfe2, a *fe2) {
 	wmul(&c[1], t2, &a[1])
 }
 
-func exp(c, a *fe, e *big.Int) {
-	z := new(fe).set(r1)
+func exp(c, a *Fe, e *big.Int) {
+	z := new(Fe).set(r1)
 	for i := e.BitLen(); i >= 0; i-- {
 		mul(z, z, z)
 		if e.Bit(i) == 1 {
@@ -129,15 +129,15 @@ func exp(c, a *fe, e *big.Int) {
 	c.set(z)
 }
 
-func inverse(inv, e *fe) {
+func inverse(inv, e *Fe) {
 	if e.isZero() {
 		inv.zero()
 		return
 	}
-	u := new(fe).set(&modulus)
-	v := new(fe).set(e)
-	s := &fe{1}
-	r := &fe{0}
+	u := new(Fe).set(&modulus)
+	v := new(Fe).set(e)
+	s := &Fe{1}
+	r := &Fe{0}
 	var k int
 	var z uint64
 	var found = false
@@ -190,7 +190,7 @@ func inverse(inv, e *fe) {
 	inv.set(u)
 }
 
-func inverseBatch(in []fe) {
+func inverseBatch(in []Fe) {
 
 	n, N, setFirst := 0, len(in), false
 
@@ -203,8 +203,8 @@ func inverseBatch(in []fe) {
 		return
 	}
 
-	tA := make([]fe, n)
-	tB := make([]fe, n)
+	tA := make([]Fe, n)
+	tB := make([]Fe, n)
 
 	for i, j := 0, 0; i < N; i++ {
 		if !in[i].isZero() {
@@ -239,8 +239,8 @@ func inverseBatch(in []fe) {
 	}
 }
 
-func rsqrt(c, a *fe) bool {
-	t0, t1 := new(fe), new(fe)
+func rsqrt(c, a *Fe) bool {
+	t0, t1 := new(Fe), new(Fe)
 	sqrtAddchain(t0, a)
 	mul(t1, t0, a)
 	square(t1, t1)
@@ -249,8 +249,8 @@ func rsqrt(c, a *fe) bool {
 	return ret
 }
 
-func sqrt(c, a *fe) bool {
-	u, v := new(fe).set(a), new(fe)
+func sqrt(c, a *Fe) bool {
+	u, v := new(Fe).set(a), new(Fe)
 	// a ^ (p - 3) / 4
 	sqrtAddchain(c, a)
 	// a ^ (p + 1) / 4
@@ -260,22 +260,22 @@ func sqrt(c, a *fe) bool {
 	return u.equal(v)
 }
 
-func _sqrt(c, a *fe) bool {
-	u, v := new(fe).set(a), new(fe)
+func _sqrt(c, a *Fe) bool {
+	u, v := new(Fe).set(a), new(Fe)
 	exp(c, a, pPlus1Over4)
 	square(v, c)
 	return u.equal(v)
 }
 
-func sqrtAddchain(c, a *fe) {
-	chain := func(c *fe, n int, a *fe) {
+func sqrtAddchain(c, a *Fe) {
+	chain := func(c *Fe, n int, a *Fe) {
 		for i := 0; i < n; i++ {
 			square(c, c)
 		}
 		mul(c, c, a)
 	}
 
-	t := make([]fe, 16)
+	t := make([]Fe, 16)
 	t[13].set(a)
 	square(&t[0], &t[13])
 	mul(&t[8], &t[0], &t[13])
@@ -364,9 +364,9 @@ func sqrtAddchain(c, a *fe) {
 	square(c, &t[0])
 }
 
-func isQuadraticNonResidue(a *fe) bool {
+func isQuadraticNonResidue(a *Fe) bool {
 	if a.isZero() {
 		return true
 	}
-	return !sqrt(new(fe), a)
+	return !sqrt(new(Fe), a)
 }

@@ -15,16 +15,16 @@ func (g *G1) one() *PointG1 {
 
 func (g *G1) rand() *PointG1 {
 	p := &PointG1{}
-	z, _ := new(fe).rand(rand.Reader)
-	z6, bz6 := new(fe), new(fe)
+	z, _ := new(Fe).rand(rand.Reader)
+	z6, bz6 := new(Fe), new(Fe)
 	square(z6, z)
 	square(z6, z6)
 	mul(z6, z6, z)
 	mul(z6, z6, z)
 	mul(bz6, z6, b)
 	for {
-		x, _ := new(fe).rand(rand.Reader)
-		y := new(fe)
+		x, _ := new(Fe).rand(rand.Reader)
+		y := new(Fe)
 		square(y, x)
 		mul(y, y, x)
 		add(y, y, bz6)
@@ -124,7 +124,7 @@ func TestG1IsOnCurve(t *testing.T) {
 	if !g.IsOnCurve(zero) {
 		t.Fatal("zero must be on curve")
 	}
-	one := new(fe).one()
+	one := new(Fe).one()
 	p := &PointG1{*one, *one, *one}
 	if g.IsOnCurve(p) {
 		t.Fatal("(1, 1) is not on curve")

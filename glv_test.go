@@ -16,7 +16,7 @@ func TestGLVConstruction(t *testing.T) {
 		if !t0.Equal(t1) {
 			t.Fatal("lambda1^2 + lambda1 + 1 = 0")
 		}
-		c0 := new(fe)
+		c0 := new(Fe)
 		square(c0, glvPhi1)
 		mul(c0, c0, glvPhi1)
 		if !c0.isOne() {

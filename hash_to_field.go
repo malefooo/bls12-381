@@ -5,12 +5,12 @@ import (
 	"errors"
 )
 
-func HashToFpXMDSHA256(msg []byte, domain []byte, count int) ([]*fe, error) {
+func HashToFpXMDSHA256(msg []byte, domain []byte, count int) ([]*Fe, error) {
 	randBytes, err := expandMsgSHA256XMD(msg, domain, count*64)
 	if err != nil {
 		return nil, err
 	}
-	els := make([]*fe, count)
+	els := make([]*Fe, count)
 	for i := 0; i < count; i++ {
 		els[i], err = from64Bytes(randBytes[i*64 : (i+1)*64])
 		if err != nil {

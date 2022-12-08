@@ -8,7 +8,7 @@ import (
 
 // PointG1 is type for point in G1 and used for both Affine and Jacobian point representation.
 // A point is accounted as in affine form if z is equal to one.
-type PointG1 [3]fe
+type PointG1 [3]Fe
 
 var wnafMulWindowG1 uint = 5
 
@@ -32,7 +32,7 @@ func (p *PointG1) IsAffine() bool {
 }
 
 type tempG1 struct {
-	t [9]*fe
+	t [9]*Fe
 }
 
 // G1 is struct for G1 group.
@@ -47,9 +47,9 @@ func NewG1() *G1 {
 }
 
 func newTempG1() tempG1 {
-	t := [9]*fe{}
+	t := [9]*Fe{}
 	for i := 0; i < 9; i++ {
-		t[i] = &fe{}
+		t[i] = &Fe{}
 	}
 	return tempG1{t}
 }
@@ -92,7 +92,7 @@ func (g *G1) FromUncompressed(uncompressed []byte) (*PointG1, error) {
 	if err != nil {
 		return nil, err
 	}
-	z := new(fe).one()
+	z := new(Fe).one()
 	p := &PointG1{*x, *y, *z}
 	if !g.IsOnCurve(p) {
 		return nil, errors.New("point is not on curve")
@@ -148,7 +148,7 @@ func (g *G1) FromCompressed(compressed []byte) (*PointG1, error) {
 		return nil, err
 	}
 	// solve curve equation
-	y := &fe{}
+	y := &Fe{}
 	square(y, x)
 	mul(y, y, x)
 	add(y, y, b)
@@ -158,7 +158,7 @@ func (g *G1) FromCompressed(compressed []byte) (*PointG1, error) {
 	if y.signBE() == a {
 		neg(y, y)
 	}
-	z := new(fe).one()
+	z := new(Fe).one()
 	p := &PointG1{*x, *y, *z}
 	if !g.InCorrectSubgroup(p) {
 		return nil, errors.New("point is not on correct subgroup")
@@ -194,7 +194,7 @@ func (g *G1) fromBytesUnchecked(in []byte) (*PointG1, error) {
 	if err != nil {
 		return nil, err
 	}
-	p2 := new(fe).one()
+	p2 := new(Fe).one()
 	return &PointG1{*p0, *p1, *p2}, nil
 }
 
@@ -217,7 +217,7 @@ func (g *G1) FromBytes(in []byte) (*PointG1, error) {
 	if p0.isZero() && p1.isZero() {
 		return g.Zero(), nil
 	}
-	p2 := new(fe).one()
+	p2 := new(Fe).one()
 	p := &PointG1{*p0, *p1, *p2}
 	if !g.IsOnCurve(p) {
 		return nil, errors.New("point is not on curve")
@@ -357,7 +357,7 @@ func (g *G1) affine(r, p *PointG1) *PointG1 {
 
 // AffineBatch given multiple of points returns affine representations
 func (g *G1) AffineBatch(p []*PointG1) {
-	inverses := make([]fe, len(p))
+	inverses := make([]Fe, len(p))
 	for i := 0; i < len(p); i++ {
 		inverses[i].set(&p[i][2])
 	}
@@ -800,7 +800,7 @@ func (g *G1) MapToCurve(in []byte) (*PointG1, error) {
 	}
 	x, y := swuMapG1(u)
 	isogenyMapG1(x, y)
-	one := new(fe).one()
+	one := new(Fe).one()
 	p := &PointG1{*x, *y, *one}
 	g.ClearCofactor(p)
 	return g.Affine(p), nil
@@ -818,7 +818,7 @@ func (g *G1) EncodeToCurve(msg, domain []byte) (*PointG1, error) {
 	u := hashRes[0]
 	x, y := swuMapG1(u)
 	isogenyMapG1(x, y)
-	one := new(fe).one()
+	one := new(Fe).one()
 	p := &PointG1{*x, *y, *one}
 	g.ClearCofactor(p)
 	return g.Affine(p), nil
@@ -836,7 +836,7 @@ func (g *G1) HashToCurve(msg, domain []byte) (*PointG1, error) {
 	u0, u1 := hashRes[0], hashRes[1]
 	x0, y0 := swuMapG1(u0)
 	x1, y1 := swuMapG1(u1)
-	one := new(fe).one()
+	one := new(Fe).one()
 	p0, p1 := &PointG1{*x0, *y0, *one}, &PointG1{*x1, *y1, *one}
 	g.Add(p0, p0, p1)
 	g.Affine(p0)

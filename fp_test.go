@@ -10,20 +10,20 @@ import (
 func TestFpSerialization(t *testing.T) {
 	t.Run("zero", func(t *testing.T) {
 		in := make([]byte, fpByteSize)
-		fe, err := fromBytes(in)
+		Fe, err := fromBytes(in)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !fe.isZero() {
+		if !Fe.isZero() {
 			t.Fatal("serialization failed")
 		}
-		if !bytes.Equal(in, toBytes(fe)) {
+		if !bytes.Equal(in, toBytes(Fe)) {
 			t.Fatal("serialization failed")
 		}
 	})
 	t.Run("bytes", func(t *testing.T) {
 		for i := 0; i < fuz; i++ {
-			a, _ := new(fe).rand(rand.Reader)
+			a, _ := new(Fe).rand(rand.Reader)
 			b, err := fromBytes(toBytes(a))
 			if err != nil {
 				t.Fatal(err)
@@ -35,7 +35,7 @@ func TestFpSerialization(t *testing.T) {
 	})
 	t.Run("string", func(t *testing.T) {
 		for i := 0; i < fuz; i++ {
-			a, _ := new(fe).rand(rand.Reader)
+			a, _ := new(Fe).rand(rand.Reader)
 			b, err := fromString(toString(a))
 			if err != nil {
 				t.Fatal(err)
@@ -47,7 +47,7 @@ func TestFpSerialization(t *testing.T) {
 	})
 	t.Run("big", func(t *testing.T) {
 		for i := 0; i < fuz; i++ {
-			a, _ := new(fe).rand(rand.Reader)
+			a, _ := new(Fe).rand(rand.Reader)
 			b, err := fromBig(toBig(a))
 			if err != nil {
 				t.Fatal(err)
@@ -61,9 +61,9 @@ func TestFpSerialization(t *testing.T) {
 
 func TestFpAdditionCrossAgainstBigInt(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
-		c := new(fe)
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
+		c := new(Fe)
 		big_a := a.big()
 		big_b := b.big()
 		big_c := new(big.Int)
@@ -96,8 +96,8 @@ func TestFpAdditionCrossAgainstBigInt(t *testing.T) {
 
 func TestFpAdditionCrossAgainstBigIntAssigned(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
 		big_a, big_b := a.big(), b.big()
 		addAssign(a, b)
 		out_1 := a.bytes()
@@ -105,7 +105,7 @@ func TestFpAdditionCrossAgainstBigIntAssigned(t *testing.T) {
 		if !bytes.Equal(out_1, out_2) {
 			t.Fatal("cross test against big.Int is failed A")
 		}
-		a, _ = new(fe).rand(rand.Reader)
+		a, _ = new(Fe).rand(rand.Reader)
 		big_a = a.big()
 		doubleAssign(a)
 		out_1 = a.bytes()
@@ -113,8 +113,8 @@ func TestFpAdditionCrossAgainstBigIntAssigned(t *testing.T) {
 		if !bytes.Equal(out_1, out_2) {
 			t.Fatal("cross test against big.Int is failed B")
 		}
-		a, _ = new(fe).rand(rand.Reader)
-		b, _ = new(fe).rand(rand.Reader)
+		a, _ = new(Fe).rand(rand.Reader)
+		b, _ = new(Fe).rand(rand.Reader)
 		big_a, big_b = a.big(), b.big()
 		subAssign(a, b)
 		out_1 = a.bytes()
@@ -128,10 +128,10 @@ func TestFpAdditionCrossAgainstBigIntAssigned(t *testing.T) {
 func TestFpAdditionProperties(t *testing.T) {
 	for i := 0; i < fuz; i++ {
 
-		zero := new(fe).zero()
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
-		c1, c2 := new(fe), new(fe)
+		zero := new(Fe).zero()
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
+		c1, c2 := new(Fe), new(Fe)
 		add(c1, a, zero)
 		if !c1.equal(a) {
 			t.Fatal("a + 0 == a")
@@ -169,7 +169,7 @@ func TestFpAdditionProperties(t *testing.T) {
 		if !c1.equal(c2) {
 			t.Fatal("a - b = - ( b - a )")
 		}
-		cx, _ := new(fe).rand(rand.Reader)
+		cx, _ := new(Fe).rand(rand.Reader)
 		add(c1, a, b)
 		add(c1, c1, cx)
 		add(c2, a, cx)
@@ -189,8 +189,8 @@ func TestFpAdditionProperties(t *testing.T) {
 
 func TestFpAdditionPropertiesAssigned(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		zero := new(fe).zero()
-		a, b := new(fe), new(fe)
+		zero := new(Fe).zero()
+		a, b := new(Fe), new(Fe)
 		_, _ = a.rand(rand.Reader)
 		b.set(a)
 		addAssign(a, zero)
@@ -221,7 +221,7 @@ func TestFpAdditionPropertiesAssigned(t *testing.T) {
 		}
 		_, _ = a.rand(rand.Reader)
 		_, _ = b.rand(rand.Reader)
-		c1, c2 := new(fe).set(a), new(fe).set(b)
+		c1, c2 := new(Fe).set(a), new(Fe).set(b)
 		addAssign(c1, b)
 		addAssign(c2, a)
 		if !c1.equal(c2) {
@@ -239,8 +239,8 @@ func TestFpAdditionPropertiesAssigned(t *testing.T) {
 		}
 		_, _ = a.rand(rand.Reader)
 		_, _ = b.rand(rand.Reader)
-		c, _ := new(fe).rand(rand.Reader)
-		a0 := new(fe).set(a)
+		c, _ := new(Fe).rand(rand.Reader)
+		a0 := new(Fe).set(a)
 		addAssign(a, b)
 		addAssign(a, c)
 		addAssign(b, c)
@@ -264,11 +264,11 @@ func TestFpAdditionPropertiesAssigned(t *testing.T) {
 
 func TestFpLazyOperations(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
-		c, _ := new(fe).rand(rand.Reader)
-		c0 := new(fe)
-		c1 := new(fe)
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
+		c, _ := new(Fe).rand(rand.Reader)
+		c0 := new(Fe)
+		c1 := new(Fe)
 		ladd(c0, a, b)
 		add(c1, a, b)
 		mul(c0, c0, c)
@@ -286,7 +286,7 @@ func TestFpLazyOperations(t *testing.T) {
 		_, _ = a.rand(rand.Reader)
 		_, _ = b.rand(rand.Reader)
 		_, _ = c.rand(rand.Reader)
-		a0 := new(fe).set(a)
+		a0 := new(Fe).set(a)
 		lsubAssign(a, b)
 		laddAssign(a, &modulus)
 		mul(a, a, c)
@@ -300,9 +300,9 @@ func TestFpLazyOperations(t *testing.T) {
 
 func TestFpMultiplicationCrossAgainstBigInt(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
-		c := new(fe)
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
+		c := new(Fe)
 		big_a := toBig(a)
 		big_b := toBig(b)
 		big_c := new(big.Int)
@@ -317,10 +317,10 @@ func TestFpMultiplicationCrossAgainstBigInt(t *testing.T) {
 
 func TestFpMultiplicationProperties(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
-		zero, one := new(fe).zero(), new(fe).one()
-		c1, c2 := new(fe), new(fe)
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
+		zero, one := new(Fe).zero(), new(Fe).one()
+		c1, c2 := new(Fe), new(Fe)
 		mul(c1, a, zero)
 		if !c1.equal(zero) {
 			t.Fatal("a * 0 == 0")
@@ -334,7 +334,7 @@ func TestFpMultiplicationProperties(t *testing.T) {
 		if !c1.equal(c2) {
 			t.Fatal("a * b == b * a")
 		}
-		cx, _ := new(fe).rand(rand.Reader)
+		cx, _ := new(Fe).rand(rand.Reader)
 		mul(c1, a, b)
 		mul(c1, c1, cx)
 		mul(c2, cx, b)
@@ -361,8 +361,8 @@ func TestFpMultiplicationProperties(t *testing.T) {
 
 func TestFpExponentiation(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		u := new(fe)
+		a, _ := new(Fe).rand(rand.Reader)
+		u := new(Fe)
 		exp(u, a, big.NewInt(0))
 		if !u.isOne() {
 			t.Fatal("a^0 == 1")
@@ -371,7 +371,7 @@ func TestFpExponentiation(t *testing.T) {
 		if !u.equal(a) {
 			t.Fatal("a^1 == a")
 		}
-		v := new(fe)
+		v := new(Fe)
 		mul(u, a, a)
 		mul(u, u, u)
 		mul(u, u, u)
@@ -393,8 +393,8 @@ func TestFpExponentiation(t *testing.T) {
 
 func TestFpInversion(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		u := new(fe)
-		zero, one := new(fe).zero(), new(fe).one()
+		u := new(Fe)
+		zero, one := new(Fe).zero(), new(Fe).one()
 		inverse(u, zero)
 		if !u.equal(zero) {
 			t.Fatal("(0^-1) == 0)")
@@ -403,13 +403,13 @@ func TestFpInversion(t *testing.T) {
 		if !u.equal(one) {
 			t.Fatal("(1^-1) == 1)")
 		}
-		a, _ := new(fe).rand(rand.Reader)
+		a, _ := new(Fe).rand(rand.Reader)
 		inverse(u, a)
 		mul(u, u, a)
 		if !u.equal(one) {
 			t.Fatal("(r*a) * r*(a^-1) == r)")
 		}
-		v := new(fe)
+		v := new(Fe)
 		p := modulus.big()
 		exp(u, a, p.Sub(p, big.NewInt(2)))
 		inverse(v, a)
@@ -422,11 +422,11 @@ func TestFpInversion(t *testing.T) {
 func TestFpBatchInversion(t *testing.T) {
 	n := 20
 	for i := 0; i < n; i++ {
-		e0 := make([]fe, n)
-		e1 := make([]fe, n)
+		e0 := make([]Fe, n)
+		e1 := make([]Fe, n)
 		for j := 0; j < n; j++ {
 			if j != i {
-				e, err := new(fe).rand(rand.Reader)
+				e, err := new(Fe).rand(rand.Reader)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -445,12 +445,12 @@ func TestFpBatchInversion(t *testing.T) {
 }
 
 func TestFpSquareRoot(t *testing.T) {
-	if sqrt(new(fe), nonResidue1) {
+	if sqrt(new(Fe), nonResidue1) {
 		t.Fatal("non residue cannot have a sqrt")
 	}
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		r0, r1 := new(fe), new(fe)
+		a, _ := new(Fe).rand(rand.Reader)
+		r0, r1 := new(Fe), new(Fe)
 		d0 := sqrt(r0, a)
 		d1 := _sqrt(r1, a)
 		if d0 != d1 {
@@ -473,22 +473,22 @@ func TestFpNonResidue(t *testing.T) {
 	if !isQuadraticNonResidue(nonResidue1) {
 		t.Fatal("element is quadratic non residue, 1")
 	}
-	if isQuadraticNonResidue(new(fe).one()) {
+	if isQuadraticNonResidue(new(Fe).one()) {
 		t.Fatal("one is not quadratic non residue")
 	}
-	if !isQuadraticNonResidue(new(fe).zero()) {
+	if !isQuadraticNonResidue(new(Fe).zero()) {
 		t.Fatal("should accept zero as quadratic non residue")
 	}
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
+		a, _ := new(Fe).rand(rand.Reader)
 		square(a, a)
 		if isQuadraticNonResidue(a) {
 			t.Fatal("element is not quadratic non residue")
 		}
 	}
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		if !sqrt(new(fe), a) {
+		a, _ := new(Fe).rand(rand.Reader)
+		if !sqrt(new(Fe), a) {
 			if !isQuadraticNonResidue(a) {
 				t.Fatal("element is quadratic non residue, 2", i)
 			}
@@ -500,7 +500,7 @@ func TestFpNonResidue(t *testing.T) {
 
 func TestWFp(t *testing.T) {
 	w := new(wfe)
-	a := new(fe)
+	a := new(Fe)
 	fromWide(a, w)
 	if !a.isZero() {
 		t.Fatal("expect zero")
@@ -519,10 +519,10 @@ func TestWFp(t *testing.T) {
 
 func TestWFpAddition(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a, _ := new(fe).rand(rand.Reader)
-		b, _ := new(fe).rand(rand.Reader)
+		a, _ := new(Fe).rand(rand.Reader)
+		b, _ := new(Fe).rand(rand.Reader)
 		w0, w1 := new(wfe), new(wfe)
-		c0, c1 := new(fe), new(fe)
+		c0, c1 := new(Fe), new(Fe)
 
 		wmul(w0, a, b)
 		w1.set(w0)
@@ -554,8 +554,8 @@ func TestWFpAddition(t *testing.T) {
 			t.Fatal("doubling failed")
 		}
 
-		wmul(w0, a, &fe{10001})
-		wmul(w1, a, &fe{10000})
+		wmul(w0, a, &Fe{10001})
+		wmul(w1, a, &Fe{10000})
 		w2 := new(wfe)
 		wsub(w2, w0, w1)
 		lwsub(w0, w0, w1)
@@ -570,8 +570,8 @@ func TestWFpAddition(t *testing.T) {
 			t.Fatal("subtraction failed")
 		}
 
-		wmul(w0, a, &fe{10001})
-		wmul(w1, a, &fe{10000})
+		wmul(w0, a, &Fe{10001})
+		wmul(w1, a, &Fe{10000})
 		wsub(w0, w1, w0)
 		fromWide(c0, w0)
 
@@ -586,13 +586,13 @@ func TestWFpAddition(t *testing.T) {
 
 func TestWFpMultiplication(t *testing.T) {
 	for i := 0; i < fuz; i++ {
-		a0, _ := new(fe).rand(rand.Reader)
-		b0, _ := new(fe).rand(rand.Reader)
-		a1, _ := new(fe).rand(rand.Reader)
-		b1, _ := new(fe).rand(rand.Reader)
+		a0, _ := new(Fe).rand(rand.Reader)
+		b0, _ := new(Fe).rand(rand.Reader)
+		a1, _ := new(Fe).rand(rand.Reader)
+		b1, _ := new(Fe).rand(rand.Reader)
 		w0, w1, w2, w3 := new(wfe), new(wfe), new(wfe), new(wfe)
-		c0, c1 := new(fe), new(fe)
-		r0, r1 := new(fe), new(fe)
+		c0, c1 := new(Fe), new(Fe)
+		r0, r1 := new(Fe), new(Fe)
 
 		wmul(w0, a0, b0)
 		fromWide(r0, w0)
@@ -2034,42 +2034,42 @@ func TestFp4MultiplicationCross(t *testing.T) {
 }
 
 func BenchmarkFpMul(t *testing.B) {
-	a, _ := new(fe).rand(rand.Reader)
-	b, _ := new(fe).rand(rand.Reader)
-	c := new(fe)
+	a, _ := new(Fe).rand(rand.Reader)
+	b, _ := new(Fe).rand(rand.Reader)
+	c := new(Fe)
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
 		mul(c, a, b)
 	}
 }
 
-func (fe *wfe) bytes() []byte {
+func (Fe *wfe) bytes() []byte {
 	out := make([]byte, fpByteSize*2)
 	var a int
 	for i := 0; i < 2*fpNumberOfLimbs; i++ {
 		a = fpByteSize*2 - i*8
-		out[a-1] = byte(fe[i])
-		out[a-2] = byte(fe[i] >> 8)
-		out[a-3] = byte(fe[i] >> 16)
-		out[a-4] = byte(fe[i] >> 24)
-		out[a-5] = byte(fe[i] >> 32)
-		out[a-6] = byte(fe[i] >> 40)
-		out[a-7] = byte(fe[i] >> 48)
-		out[a-8] = byte(fe[i] >> 56)
+		out[a-1] = byte(Fe[i])
+		out[a-2] = byte(Fe[i] >> 8)
+		out[a-3] = byte(Fe[i] >> 16)
+		out[a-4] = byte(Fe[i] >> 24)
+		out[a-5] = byte(Fe[i] >> 32)
+		out[a-6] = byte(Fe[i] >> 40)
+		out[a-7] = byte(Fe[i] >> 48)
+		out[a-8] = byte(Fe[i] >> 56)
 	}
 	return out
 }
 
-func (fe *wfe) equal(fe2 *wfe) bool {
-	return fe2[0] == fe[0] && fe2[1] == fe[1] && fe2[2] == fe[2] && fe2[3] == fe[3] && fe2[4] == fe[4] && fe2[5] == fe[5] && fe2[6] == fe[6] && fe2[7] == fe[7] && fe2[8] == fe[8] && fe2[9] == fe[9] && fe2[10] == fe[10] && fe2[11] == fe[11]
+func (Fe *wfe) equal(fe2 *wfe) bool {
+	return fe2[0] == Fe[0] && fe2[1] == Fe[1] && fe2[2] == Fe[2] && fe2[3] == Fe[3] && fe2[4] == Fe[4] && fe2[5] == Fe[5] && fe2[6] == Fe[6] && fe2[7] == Fe[7] && fe2[8] == Fe[8] && fe2[9] == Fe[9] && fe2[10] == Fe[10] && fe2[11] == Fe[11]
 }
 
-func (fe *wfe2) equal(fe2 *wfe2) bool {
-	return fe[0].equal(&fe2[0]) && fe[1].equal(&fe2[1])
+func (Fe *wfe2) equal(fe2 *wfe2) bool {
+	return Fe[0].equal(&fe2[0]) && Fe[1].equal(&fe2[1])
 }
 
 func _fp2MulByNonResidue(c, a *fe2) {
-	t0 := &fe{}
+	t0 := &Fe{}
 	add(t0, &a[0], &a[1])
 	sub(&c[0], &a[0], &a[1])
 	c[1].set(t0)
@@ -2114,7 +2114,7 @@ func _wfp2MulByNonResidue(c, a *wfe2) {
 
 func _wfp2Mul(c *wfe2, a, b *fe2) {
 	wt0, wt1 := new(wfe), new(wfe)
-	t0, t1 := new(fe), new(fe)
+	t0, t1 := new(Fe), new(Fe)
 	wmul(wt0, &a[0], &b[0]) // a0b0
 	wmul(wt1, &a[1], &b[1]) // a1b1
 	wsub(&c[0], wt0, wt1)   // c0 = a0b0 - a1b1
@@ -2126,7 +2126,7 @@ func _wfp2Mul(c *wfe2, a, b *fe2) {
 }
 
 func _wfp2Square(c *wfe2, a *fe2) {
-	t0, t1, t2 := new(fe), new(fe), new(fe)
+	t0, t1, t2 := new(Fe), new(Fe), new(Fe)
 	ladd(t0, &a[0], &a[1]) // (a0 + a1)
 	sub(t1, &a[0], &a[1])  // (a0 - a1)
 	ldouble(t2, &a[0])     // 2a0

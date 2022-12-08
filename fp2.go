@@ -6,7 +6,7 @@ import (
 )
 
 type fp2Temp struct {
-	t [3]*fe
+	t [3]*Fe
 	w *wfe2
 }
 
@@ -15,9 +15,9 @@ type fp2 struct {
 }
 
 func newFp2Temp() fp2Temp {
-	t := [3]*fe{}
+	t := [3]*Fe{}
 	for i := 0; i < len(t); i++ {
-		t[i] = &fe{}
+		t[i] = &Fe{}
 	}
 	return fp2Temp{t, &wfe2{}}
 }
@@ -102,12 +102,12 @@ func (e *fp2) squareAssign(a *fe2) {
 	mul(&a[1], t[2], &a[1])
 }
 
-func (e *fp2) mul0(c, a *fe2, b *fe) {
+func (e *fp2) mul0(c, a *fe2, b *Fe) {
 	mul(&c[0], &a[0], b)
 	mul(&c[1], &a[1], b)
 }
 
-func (e *fp2) mul0Assign(a *fe2, b *fe) {
+func (e *fp2) mul0Assign(a *fe2, b *Fe) {
 	mul(&a[0], &a[0], b)
 	mul(&a[1], &a[1], b)
 }
@@ -233,7 +233,7 @@ func (e *fp2) sqrt(c, a *fe2) bool {
 }
 
 func (e *fp2) isQuadraticNonResidue(a *fe2) bool {
-	c0, c1 := new(fe), new(fe)
+	c0, c1 := new(Fe), new(Fe)
 	square(c0, &a[0])
 	square(c1, &a[1])
 	add(c1, c1, c0)
@@ -244,7 +244,7 @@ func (e *fp2) isQuadraticNonResidue(a *fe2) bool {
 // https://github.com/supranational/blst/blob/master/src/sqrt.c
 
 func (e *fp2) sqrtBLST(out, inp *fe2) bool {
-	aa, bb := new(fe), new(fe)
+	aa, bb := new(Fe), new(Fe)
 	ret := new(fe2)
 	square(aa, &inp[0])
 	square(bb, &inp[1])
