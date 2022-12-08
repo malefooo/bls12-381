@@ -76,13 +76,13 @@ func toBytes(e *Fe) []byte {
 	return e2.bytes()
 }
 
-func toBig(e *Fe) *big.Int {
+func ToBig(e *Fe) *big.Int {
 	e2 := new(Fe)
 	fromMont(e2, e)
 	return e2.big()
 }
 
-func toString(e *Fe) (s string) {
+func ToString(e *Fe) (s string) {
 	e2 := new(Fe)
 	fromMont(e2, e)
 	return e2.string()

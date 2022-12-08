@@ -36,7 +36,7 @@ func TestFpSerialization(t *testing.T) {
 	t.Run("string", func(t *testing.T) {
 		for i := 0; i < fuz; i++ {
 			a, _ := new(Fe).rand(rand.Reader)
-			b, err := fromString(toString(a))
+			b, err := fromString(ToString(a))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -48,7 +48,7 @@ func TestFpSerialization(t *testing.T) {
 	t.Run("big", func(t *testing.T) {
 		for i := 0; i < fuz; i++ {
 			a, _ := new(Fe).rand(rand.Reader)
-			b, err := fromBig(toBig(a))
+			b, err := fromBig(ToBig(a))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -303,8 +303,8 @@ func TestFpMultiplicationCrossAgainstBigInt(t *testing.T) {
 		a, _ := new(Fe).rand(rand.Reader)
 		b, _ := new(Fe).rand(rand.Reader)
 		c := new(Fe)
-		big_a := toBig(a)
-		big_b := toBig(b)
+		big_a := ToBig(a)
+		big_b := ToBig(b)
 		big_c := new(big.Int)
 		mul(c, a, b)
 		out_1 := toBytes(c)
