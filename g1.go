@@ -811,7 +811,7 @@ func (g *G1) MapToCurve(in []byte) (*PointG1, error) {
 // Implementation follows BLS12381G1_XMD:SHA-256_SSWU_NU_ suite at
 // https://tools.ietf.org/html/draft-irtf-cfrg-hash-to-curve-06
 func (g *G1) EncodeToCurve(msg, domain []byte) (*PointG1, error) {
-	hashRes, err := hashToFpXMDSHA256(msg, domain, 1)
+	hashRes, err := HashToFpXMDSHA256(msg, domain, 1)
 	if err != nil {
 		return nil, err
 	}
@@ -829,7 +829,7 @@ func (g *G1) EncodeToCurve(msg, domain []byte) (*PointG1, error) {
 // Implementation follows BLS12381G1_XMD:SHA-256_SSWU_RO_ suite at
 // https://tools.ietf.org/html/draft-irtf-cfrg-hash-to-curve-06
 func (g *G1) HashToCurve(msg, domain []byte) (*PointG1, error) {
-	hashRes, err := hashToFpXMDSHA256(msg, domain, 2)
+	hashRes, err := HashToFpXMDSHA256(msg, domain, 2)
 	if err != nil {
 		return nil, err
 	}

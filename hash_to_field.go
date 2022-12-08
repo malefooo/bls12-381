@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func hashToFpXMDSHA256(msg []byte, domain []byte, count int) ([]*fe, error) {
+func HashToFpXMDSHA256(msg []byte, domain []byte, count int) ([]*fe, error) {
 	randBytes, err := expandMsgSHA256XMD(msg, domain, count*64)
 	if err != nil {
 		return nil, err
